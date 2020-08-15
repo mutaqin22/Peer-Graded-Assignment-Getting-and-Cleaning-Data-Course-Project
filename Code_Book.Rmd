@@ -1,0 +1,62 @@
+---
+title: "Code_Book"
+author: "choirul muttaqin"
+date: "8/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Download the dataset
+* Dataset downloaded and extracted under the folder called UCI HAR Dataset. 
+* Every file needed such as `features.txt`, `activity_labels.txt`, 
+`subject_test.txt`, `X_test.txt`, `y_test.txt`, `X_train.txt`and `y_train.txt`
+is placed in one folder for easy reading of the data
+
+## 2. Set directory with `setwd()`
+* Specifies directory location in `D:\\Coursera\\Getting and Cleaning Data`
+
+## 3. Load package
+* Load `library(dply)` for data manipulation. Read the documentation [dplyr](https://cran.r-project.org/web/packages/dplyr/index.html) 
+
+## 4. Assign each data to variables and add column names
+* `features` <- `features.txt` : 561 rows, 2 columns <br/> _The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ_.
+* `activities` <- `activity_labels.txt` : 6 rows, 2 columns <br/> _List of activities performed when the corresponding measurements were taken and its codes (labels)_
+* `subject_test` <- `test/subject_test.txt` : 2947 rows, 1 column <br/> _contains test data of 9/30 volunteer test subjects being observed_
+`x_test` <- `test/X_test.txt` : 2947 rows, 561 columns <br/> _contains recorded features test data_
+`y_test` <- `test/y_test.txt` : 2947 rows, 1 columns <br/> _contains test data of activities’code labels_
+`subject_train` <- `test/subject_train.txt` : 7352 rows, 1 column <br/> _contains train data of 21/30 volunteer subjects being observed_
+`x_train` <- `test/X_train.txt` : 7352 rows, 561 columns <br/> _contains recorded features train data_
+`y_train` <- `test/y_train.txt` : 7352 rows, 1 columns _contains train data of activities’code labels_
+
+## 5. Ensure the value of each variable
+* Use `str()` in each of the variables to make sure the output is _error-free_ and is exactly what it should be
+
+## 6. Merges the training and the test sets to create one data set
+* `df1` (10299 rows, 561 columns) is created by merging `x_train` and `x_test` using **rbind()** function
+* `df2` (10299 rows, 1 column) is created by merging `y_train` and `y_test` using **rbind()** function
+* `df3` (10299 rows, 1 column) is created by merging `subject_train` and `subject_test` using **rbind()** function
+* `Data-final` (10299 rows, 563 column) is created by merging `df3`, `df2` and `df1` using **cbind()** function
+
+## 7. Extracts only the measurements on the mean and standard deviation for each measurement
+* `TidyData` (10299 rows, 88 columns) is created by subsetting `Data_final`, selecting only columns: `subject`, `code` and the measurements on the `mean` and standard deviation (`std`) for each measurement
+
+## 8. Uses descriptive activity names to name the activities in the data set
+* Entire numbers in code column of the `TidyData` replaced with corresponding activity taken from second column of the `activities` variable
+
+## 9. Appropriately labels the data set with descriptive variable names
+* `code` column in `TidyData` renamed into `activities`
+* All `Acc` in column’s name replaced by `Accelerometer`
+* All `Gyro` in column’s name replaced by `Gyroscope`
+* All `BodyBody` in column’s name replaced by `Body`
+* All `Mag` in column’s name replaced by `Magnitude`
+* All `angle` in column’s name replaced by `Angle`
+* All `gravity` in column’s name replaced by `Gravity`
+* All start with character `f` in column’s name replaced by `Frequency`
+* All start with character `t` in column’s name replaced by `Time`
+
+## 10 From the data set in step 9, creates a second, independent tidy data set with the average of each variable for each activity and each subject
+* `FinalData` (180 rows, 88 columns) is created by sumarizing `TidyData` taking the means of each variable for each activity and each subject, after groupped by subject and activity.
+* Export `FinalData` into `FinalData.txt` file.
